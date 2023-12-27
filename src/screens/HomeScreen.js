@@ -12,6 +12,7 @@ import threeFriends from "../assets/images/threeFriends.png";
 import memories from "../assets/images/memories.png";
 import starBg from "../assets/images/starImg.png";
 import photos from "../assets/photos/photos";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { FaArrowCircleRight } from "react-icons/fa";
 
@@ -27,21 +28,24 @@ const HomeScreen = () => {
 
   const music = new Audio(matargasti);
 
+  const [play, { stop }] = useSound(matargasti);
+
   useEffect(() => {
     if (photo) {
       const picNo = Math.ceil(Math.random() * (92 - 1) + 1);
       setTimeout(() => {
         setPhoto(photos[picNo]);
-      }, 3000);
+      }, 2000);
     }
   }, [photo]);
 
   useEffect(() => {
     if (playPause) {
-      music.play();
-      setPhoto(require("../assets/photos/photosDone/newYear.png"));
+      play();
+
+      setPhoto("/photosDone/newYear.png");
     } else {
-      music.pause();
+      stop();
       setName(false);
     }
   }, [playPause]);
@@ -94,7 +98,10 @@ const HomeScreen = () => {
                 </Button>
               </Flex>
             ) : (
-              <Image src={photo} objectFit="contain" />
+              <picture>
+                <source type="image/webp" />
+                <img src={photo} loading="lazy" objectFit="contain" />
+              </picture>
             )}
           </Flex>
 
